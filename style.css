@@ -1,0 +1,422 @@
+/* ========================================
+   RESET & GLOBAL
+   ======================================== */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@font-face {
+    font-family: 'Google Sans Flex';
+    src: url('Google_Sans_Flex/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Google Sans Flex', 'Segoe UI', Roboto, sans-serif;
+    font-size: 12px;
+    color: #000000;
+}
+
+/* ========================================
+   TELA 00: SPLASH
+   ======================================== */
+#splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #17447c;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+#splash-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+#splash-logo {
+    width: 180px;
+    max-width: 50%;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.05);
+        opacity: 0.9;
+    }
+}
+
+/* ========================================
+   TELA 01: PRINCIPAL
+   ======================================== */
+#main-screen {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+#main-screen.visible {
+    display: flex;
+}
+
+/* ---- HEADER ---- */
+#app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #113680;
+    padding: 8px 16px;
+    min-height: 50px;
+    flex-shrink: 0;
+}
+
+#header-logo {
+    height: 32px;
+}
+
+#hamburger-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px;
+}
+
+#hamburger-btn span {
+    display: block;
+    width: 26px;
+    height: 3px;
+    background-color: #ffffff;
+    border-radius: 2px;
+    transition: transform 0.3s ease;
+}
+
+#hamburger-btn:hover span:nth-child(1) {
+    transform: translateX(3px);
+}
+
+#hamburger-btn:hover span:nth-child(3) {
+    transform: translateX(-3px);
+}
+
+/* ---- TOPO ---- */
+#topo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: #e6e6e6;
+    min-height: 50px;
+    padding: 15px 20px;
+    flex-shrink: 0;
+    border-bottom: 1px solid #cccccc;
+}
+
+#carregar-alunos-label {
+    color: #000000;
+    font-family: 'Google Sans Flex', 'Segoe UI', Roboto, sans-serif;
+    font-size: 12px;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+#csv-select {
+    font-family: 'Google Sans Flex', 'Segoe UI', Roboto, sans-serif;
+    font-size: 12px;
+    color: #000000;
+    background-color: #ffffff;
+    border: 1px solid #999999;
+    border-radius: 4px;
+    padding: 6px 10px;
+    min-width: 180px;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+#csv-select:focus {
+    border-color: #067fe3;
+    box-shadow: 0 0 0 2px rgba(6, 120, 227, 0.15);
+}
+
+#csv-select:hover {
+    border-color: #666666;
+}
+
+/* ---- MEIO ---- */
+#meio {
+    display: flex;
+    flex-direction: column;
+    background-color: #e6e6e6;
+    flex: 1;
+    overflow-y: auto;
+    border-bottom: 1px solid #cccccc;
+}
+
+#alunos-label {
+    color: #000000;
+    font-family: 'Google Sans Flex', 'Segoe UI', Roboto, sans-serif;
+    font-size: 12px;
+    padding: 20px;
+    flex-shrink: 0;
+}
+
+#tabela-container {
+    padding: 0 20px 20px 20px;
+    overflow-x: auto;
+    flex: 1;
+}
+
+/* ---- TABELA ---- */
+#tabela-container table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+#tabela-container table thead th {
+    background-color: #ffffff;
+    color: #000000;
+    font-family: 'Google Sans Flex', 'Segoe UI', Roboto, sans-serif;
+    font-size: 12px;
+    padding: 10px 8px;
+    text-align: center;
+    border: 1px solid #053dc1;
+}
+
+#tabela-container table thead th:first-child {
+    text-align: left;
+}
+
+#tabela-container table thead th img {
+    width: 72px;
+    height: 72px;
+    display: block;
+    margin: 0 auto;
+    border-radius: 4px;
+}
+
+#tabela-container table tbody td {
+    padding: 8px;
+    border: 1px solid #dddddd;
+    font-family: 'Google Sans Flex', 'Segoe UI', Roboto, sans-serif;
+    font-size: 12px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#tabela-container table tbody td:first-child {
+    text-align: left;
+    font-weight: bold;
+    background-color: #f9f9f9;
+}
+
+#tabela-container table tbody td.cell-clickable {
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: background-color 0.15s ease;
+    font-size: 16px;
+    font-weight: bold;
+    min-width: 72px;
+}
+
+#tabela-container table tbody td.cell-clickable:hover {
+    background-color: #f3faff;
+}
+
+#tabela-container table tbody td.cell-clickable.active {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+#tabela-container table tbody td.cell-clickable:not(.active) {
+    color: #999999;
+}
+
+/* ---- COLUNA SOMA ---- */
+#tabela-container table thead th.col-soma {
+    background-color: #ffffff;
+    border-color: #000000;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    min-width: 60px;
+}
+
+#tabela-container table tbody td.cell-soma {
+    background-color: #f0f4ff;
+    font-weight: 700;
+    font-size: 15px;
+    color: #1a1a2e;
+    border-left: 2px solid #1a1a2e;
+}
+
+/* ---- ENCERRAR BOTAO ---- */
+#encerrar-container {
+    padding: 20px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+#encerrar-btn {
+    background-color: #065ee3;
+    color: #ffffff;
+    font-family: 'Google Sans Flex', 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 2px 8px rgba(6, 91, 227, 0.3);
+}
+
+#encerrar-btn:hover {
+    background-color: #1b05c1;
+}
+
+#encerrar-btn:active {
+    transform: scale(0.97);
+}
+
+/* ---- RODAPE ---- */
+#rodape {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background-color: #e6e6e6;
+    min-height: 60px;
+    padding: 10px 20px;
+    flex-shrink: 0;
+    border-top: 1px solid #cccccc;
+}
+
+.tarefa-btn {
+    background: none;
+    border: 1px solid #000000;
+    color: #065be3;
+    font-family: 'Google Sans Flex', 'Segoe UI', Roboto, sans-serif;
+    font-size: 12px;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.tarefa-btn:hover {
+    background-color: rgba(227, 6, 19, 0.08);
+}
+
+.tarefa-btn:active {
+    transform: scale(0.95);
+}
+
+.tarefa-btn.active-task {
+    background-color: #0618e3;
+    color: #ffffff;
+    border-color: #0d06e3;
+}
+
+/* ========================================
+   RESPONSIVO
+   ======================================== */
+@media (min-width: 768px) {
+    #splash-logo {
+        width: 250px;
+    }
+
+    #header-logo {
+        height: 40px;
+    }
+
+    #app-header {
+        padding: 12px 24px;
+    }
+
+    #topo,
+    #alunos-label,
+    #tabela-container {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    #rodape {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+}
+
+@media (min-width: 1024px) {
+    #main-screen {
+        max-width: 900px;
+        margin: 0 auto;
+        border-left: 1px solid #cccccc;
+        border-right: 1px solid #cccccc;
+    }
+
+    html {
+        background-color: #d0d0d0;
+    }
+}
+
+/* ========================================
+   POP UP
+   ======================================== */
+#popup {
+    width: 450px;
+    height: 250px;
+    position: absolute;
+    padding: 30px;
+    margin-left: 440px;
+    margin-top: 68px;
+    background-color: rgb(200, 227, 252);
+    border-radius: 25px;
+}
+
+#popup h4 {
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+#popup li {
+    margin-bottom: 15px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+}
+
+#popup.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}

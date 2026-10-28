@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="SENAI - Sistema de Gamificação para Atividades Práticas">
+    <title>SENAI - Gamificação</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#e30613">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="imagens/icon-192.png">
+</head>
+<body>
+
+    <!-- ============ TELA 00: SPLASH ============ -->
+    <div id="splash-screen">
+        <img src="imagens/logoNexus1.png" alt="Logo SENAI" id="splash-logo">
+    </div>
+
+    <!-- ============ TELA 01: PRINCIPAL ============ -->
+    <div id="main-screen">
+
+        <!-- HEADER -->
+        <header id="app-header">
+            <img src="imagens/logoNexus2.png" alt="Logo SENAI" id="header-logo">
+            <button id="hamburger-btn" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </header>
+
+        <!--POP UP-->
+        <div id="popup">
+            <h4>Como usar o app:</h4>
+            <ol>
+                <li>Selecione o arquivo csv da turma para carregar a tabela</li>
+                <li>Clique no botão da tarefa que será realizada</li>
+                <li>Marque caso o aluno esteja com o EPI </li>
+                <li>Assim que terminar clique em encerrar atividade e os dados  serão salvos na tabela</li>
+            </ol>
+        </div>
+
+        <!-- TOPO -->
+        <section id="topo">
+            <label for="csv-select" id="carregar-alunos-label">Carregar Alunos</label>
+            <select id="csv-select">
+                <option value="">-- Selecione uma turma --</option>
+            </select>
+        </section>
+
+        <!-- MEIO -->
+        <section id="meio">
+            <p id="alunos-label">Alunos</p>
+            <div id="tabela-container">
+                <!-- Tabela será inserida aqui via JS -->
+            </div>
+            <div id="encerrar-container" style="display: none;">
+                <button id="encerrar-btn">Encerrar Atividade</button>
+            </div>
+        </section>
+
+        <!-- RODAPE -->
+        <footer id="rodape">
+            <button class="tarefa-btn" id="tarefa1-btn">Tarefa 1</button>
+            <button class="tarefa-btn" id="tarefa2-btn">Tarefa 2</button>
+            <button class="tarefa-btn" id="tarefa3-btn">Tarefa 3</button>
+        </footer>
+
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Em desenvolvimento (localhost) NÃO usa Service Worker: remove os antigos
+        // e limpa os caches, assim CSS/JS/HTML sempre aparecem com um F5 normal.
+        // Em produção (outro endereço, ex.: IP da rede / domínio) o PWA funciona.
+        var emDev = ['localhost', '127.0.0.1', '[::1]'].indexOf(location.hostname) !== -1;
+
+        if ('serviceWorker' in navigator) {
+            if (emDev) {
+                navigator.serviceWorker.getRegistrations().then(function (regs) {
+                    regs.forEach(function (r) { r.unregister(); });
+                });
+                if (window.caches) {
+                    caches.keys().then(function (keys) {
+                        keys.forEach(function (k) { caches.delete(k); });
+                    });
+                }
+            } else {
+                window.addEventListener('load', function () {
+                    navigator.serviceWorker.register('/service-worker.js', { updateViaCache: 'none' })
+                        .then(function (reg) { console.log('[PWA] Service Worker registrado:', reg.scope); })
+                        .catch(function (err) { console.log('[PWA] Erro ao registrar SW:', err); });
+                });
+            }
+        }
+    </script>
+</body>
+</html>
