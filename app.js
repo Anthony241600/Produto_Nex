@@ -24,7 +24,7 @@
     // Funciona de 2 jeitos:
     //  - COM servidor Node (server.js): usa a API  (api/csv-list, api/csv/<nome>)
     //  - SEM servidor (GitHub Pages): lê csv/index.json e csv/<nome>;
-    //    ao encerrar a atividade, guarda no navegador (localStorage) e baixa o CSV.
+    //    ao encerrar a atividade, guarda a turma no navegador (localStorage), sem baixar nada.
     // Obs.: caminhos SEM "/" no início, para funcionar em github.io/<repositorio>/
     // ========================================
     var modoEstatico = false;
@@ -61,21 +61,10 @@
         });
     }
 
-    function baixarArquivo(nome, conteudo) {
-        var blob = new Blob(['\ufeff' + conteudo], { type: 'text/csv;charset=utf-8' });
-        var a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = nome;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
-    }
-
     function salvarCSV(nome, conteudo) {
         if (modoEstatico) {
-            try { localStorage.setItem('csv:' + nome, conteudo); } catch (e) { /* ignora */ }
-            baixarArquivo(nome, conteudo);
+            try { localStorage.setItem('csv:' + nome, conteudo); }
+            catch (e) { return Promise.reject(new Error('Não foi possível salvar neste navegador.')); }
             return Promise.resolve({ local: true });
         }
         return fetch('api/csv/' + encodeURIComponent(nome), {
@@ -407,7 +396,7 @@
         salvarCSV(fileToReload, csvContent)
         .then(function (resultado) {
             if (resultado && resultado.local) {
-                alert('Atividade encerrada!\nColuna "' + dataAtual + '" adicionada.\n\nComo o site não tem servidor, o arquivo "' + fileToReload + '" foi baixado e a turma ficou salva neste navegador.\nPara publicar, substitua o arquivo na pasta csv/ do repositório.');
+                alert('Atividade encerrada!\nColuna "' + dataAtual + '" adicionada e salva neste navegador.');
             } else {
                 alert('Atividade encerrada!\nArquivo "' + fileToReload + '" atualizado com sucesso.\nColuna "' + dataAtual + '" adicionada.');
             }
