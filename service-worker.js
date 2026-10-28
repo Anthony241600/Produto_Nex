@@ -2,29 +2,29 @@
 // SERVICE WORKER - SENAI Gamificação PWA
 // ========================================
 
-var CACHE_NAME = 'senai-gamificacao-v3';
+var CACHE_NAME = 'senai-gamificacao-v4';
 
 var ASSETS_TO_CACHE = [
-    '/',
-    '/index.html',
-    '/style.css',
-    '/app.js',
-    '/manifest.json',
-    '/imagens/senai-logo.png',
-    '/imagens/icon-192.png',
-    '/imagens/icon-512.png',
-    '/imagens/imagem-01.png',
-    '/imagens/imagem-02.png',
-    '/imagens/imagem-03.png',
-    '/imagens/imagem-04.png',
-    '/imagens/imagem-05.png',
-    '/imagens/imagem-06.png',
-    '/imagens/imagem-07.png',
-    '/imagens/imagem-08.png',
-    '/imagens/imagem-09.png',
-    '/imagens/imagem-10.png',
-    '/imagens/imagem-11.png',
-    '/Google_Sans_Flex/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf'
+    './',
+    'index.html',
+    'style.css',
+    'app.js',
+    'manifest.json',
+    'imagens/senai-logo.png',
+    'imagens/icon-192.png',
+    'imagens/icon-512.png',
+    'imagens/imagem-01.png',
+    'imagens/imagem-02.png',
+    'imagens/imagem-03.png',
+    'imagens/imagem-04.png',
+    'imagens/imagem-05.png',
+    'imagens/imagem-06.png',
+    'imagens/imagem-07.png',
+    'imagens/imagem-08.png',
+    'imagens/imagem-09.png',
+    'imagens/imagem-10.png',
+    'imagens/imagem-11.png',
+    'Google_Sans_Flex/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf'
 ];
 
 // Instalar: cachear todos os assets estáticos
@@ -66,7 +66,7 @@ self.addEventListener('fetch', function (event) {
     var url = event.request.url;
 
     // Requisições da API: sempre buscar da rede (nunca cachear)
-    if (url.indexOf('/api/') !== -1) {
+    if (url.indexOf('/api/') !== -1 || url.indexOf('/csv/') !== -1) {
         event.respondWith(
             fetch(event.request).catch(function () {
                 return new Response(JSON.stringify({ error: 'Sem conexão com o servidor' }), {

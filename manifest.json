@@ -1,7 +1,7 @@
 {
   "name": "SENAI Gamificação",
   "short_name": "Gamificação",
-  "start_url": "/index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#e30613",
   "theme_color": "#e30613",

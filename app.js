@@ -18,6 +18,76 @@
         3: ['imagens/imagem-07.png', 'imagens/imagem-08.png', 'imagens/imagem-09.png']
     };
 
+
+    // ========================================
+    // ACESSO AOS CSVs
+    // Funciona de 2 jeitos:
+    //  - COM servidor Node (server.js): usa a API  (api/csv-list, api/csv/<nome>)
+    //  - SEM servidor (GitHub Pages): lê csv/index.json e csv/<nome>;
+    //    ao encerrar a atividade, guarda no navegador (localStorage) e baixa o CSV.
+    // Obs.: caminhos SEM "/" no início, para funcionar em github.io/<repositorio>/
+    // ========================================
+    var modoEstatico = false;
+
+    function listarCSVs() {
+        return fetch('api/csv-list')
+            .then(function (r) {
+                if (!r.ok) throw new Error('sem API');
+                return r.json();
+            })
+            .catch(function () {
+                modoEstatico = true;
+                return fetch('csv/index.json', { cache: 'no-cache' }).then(function (r) {
+                    if (!r.ok) throw new Error('csv/index.json não encontrado');
+                    return r.json();
+                });
+            });
+    }
+
+    function lerCSV(nome) {
+        if (modoEstatico) {
+            try {
+                var salvo = localStorage.getItem('csv:' + nome);
+                if (salvo) return Promise.resolve(salvo);
+            } catch (e) { /* localStorage indisponível */ }
+            return fetch('csv/' + encodeURIComponent(nome), { cache: 'no-cache' }).then(function (r) {
+                if (!r.ok) throw new Error('Erro ao ler CSV');
+                return r.text();
+            });
+        }
+        return fetch('api/csv/' + encodeURIComponent(nome)).then(function (r) {
+            if (!r.ok) throw new Error('Erro ao ler CSV');
+            return r.text();
+        });
+    }
+
+    function baixarArquivo(nome, conteudo) {
+        var blob = new Blob(['\ufeff' + conteudo], { type: 'text/csv;charset=utf-8' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = nome;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    }
+
+    function salvarCSV(nome, conteudo) {
+        if (modoEstatico) {
+            try { localStorage.setItem('csv:' + nome, conteudo); } catch (e) { /* ignora */ }
+            baixarArquivo(nome, conteudo);
+            return Promise.resolve({ local: true });
+        }
+        return fetch('api/csv/' + encodeURIComponent(nome), {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/csv; charset=utf-8' },
+            body: conteudo
+        }).then(function (r) {
+            if (!r.ok) throw new Error('Erro ao salvar - status: ' + r.status);
+            return r.json();
+        });
+    }
+
     // ---- Elementos do DOM ----
     var splashScreen = document.getElementById('splash-screen');
     var mainScreen = document.getElementById('main-screen');
@@ -28,8 +98,6 @@
     var tarefa1Btn = document.getElementById('tarefa1-btn');
     var tarefa2Btn = document.getElementById('tarefa2-btn');
     var tarefa3Btn = document.getElementById('tarefa3-btn');
-    var hbgBtn = document.getElementById('hamburger-btn');
-    var popup = document.getElementById('popup')
 
     // ========================================
     // SPLASH SCREEN - exibe por 3 segundos
@@ -41,31 +109,11 @@
         carregarListaCSV();
     }, 3000);
 
-    //=========================================
-    //POP UP
-    //=========================================
-    let visivel = false;
-    popup.classList.add('hidden')
-    hbgBtn.addEventListener('click', () => {
-        if(visivel == false){
-            popup.classList.remove('hidden')
-            visivel = true
-        }
-        else{
-            popup.classList.add('hidden')
-            visivel = false
-        }
-    })
-
     // ========================================
     // CARREGAR LISTA DE ARQUIVOS CSV
     // ========================================
     function carregarListaCSV() {
-        fetch('/api/csv-list')
-            .then(function (response) {
-                if (!response.ok) throw new Error('Erro ao buscar lista de CSVs');
-                return response.json();
-            })
+        listarCSVs()
             .then(function (files) {
                 // Limpar opções existentes (exceto a primeira)
                 csvSelect.innerHTML = '<option value="">-- Selecione uma turma --</option>';
@@ -99,11 +147,7 @@
 
         csvFileName = selectedFile;
 
-        fetch('/api/csv/' + encodeURIComponent(selectedFile))
-            .then(function (response) {
-                if (!response.ok) throw new Error('Erro ao ler CSV');
-                return response.text();
-            })
+        lerCSV(selectedFile)
             .then(function (text) {
                 processCSV(text);
             })
@@ -184,6 +228,14 @@
             }
         }
 
+        // Coluna SOMA no final (se há colunas numéricas)
+        if (temColunasNumericas) {
+            var thSoma = document.createElement('th');
+            thSoma.textContent = 'Soma';
+            thSoma.classList.add('col-soma');
+            headerRow.appendChild(thSoma);
+        }
+
         thead.appendChild(headerRow);
         table.appendChild(thead);
 
@@ -206,7 +258,12 @@
                 tr.appendChild(tdData);
 
                 // Somar valores numéricos (colunas a partir da 1)
-                
+                if (col > 0) {
+                    var num = parseInt(cellValue, 10);
+                    if (!isNaN(num)) {
+                        somaLinha += num;
+                    }
+                }
             }
 
             // Colunas de pontuação (se tarefa ativa)
@@ -223,6 +280,14 @@
 
                     tr.appendChild(td);
                 }
+            }
+
+            // Coluna SOMA no final
+            if (temColunasNumericas) {
+                var tdSoma = document.createElement('td');
+                tdSoma.classList.add('cell-soma');
+                tdSoma.textContent = String(somaLinha);
+                tr.appendChild(tdSoma);
             }
 
             tbody.appendChild(tr);
@@ -340,36 +405,26 @@
         console.log('csvData DEPOIS:', JSON.stringify(csvData));
         console.log('CSV a ser salvo:\n' + csvContent);
 
-        // Salvar no servidor via POST
-        fetch('/api/csv/' + encodeURIComponent(csvFileName), {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/csv; charset=utf-8' },
-            body: csvContent
-        })
-        .then(function (response) {
-            console.log('POST response status:', response.status);
-            if (!response.ok) throw new Error('Erro ao salvar - status: ' + response.status);
-            return response.json();
-        })
-        .then(function (data) {
-            console.log('Salvo com sucesso:', data);
-            alert('Atividade encerrada!\nArquivo "' + csvFileName + '" atualizado com sucesso.\nColuna "' + dataAtual + '" adicionada.');
+        // Salvar (servidor Node: grava o arquivo | site estático: guarda no navegador e baixa)
+        var fileToReload = csvFileName;
+        salvarCSV(fileToReload, csvContent)
+        .then(function (resultado) {
+            if (resultado && resultado.local) {
+                alert('Atividade encerrada!\nColuna "' + dataAtual + '" adicionada.\n\nComo o site não tem servidor, o arquivo "' + fileToReload + '" foi baixado e a turma ficou salva neste navegador.\nPara publicar, substitua o arquivo na pasta csv/ do repositório.');
+            } else {
+                alert('Atividade encerrada!\nArquivo "' + fileToReload + '" atualizado com sucesso.\nColuna "' + dataAtual + '" adicionada.');
+            }
 
-            // Recarregar CSV do servidor para manter em sincronia
-            var fileToReload = csvFileName;
             tarefaAtiva = null;
             resetBotoesTarefa();
-
-            fetch('/api/csv/' + encodeURIComponent(fileToReload))
-                .then(function (resp) { return resp.text(); })
-                .then(function (text) {
-                    processCSV(text);
-                    console.log('CSV recarregado do servidor com sucesso');
-                });
+            return lerCSV(fileToReload);
+        })
+        .then(function (text) {
+            processCSV(text);
         })
         .catch(function (err) {
             console.error('Erro ao salvar CSV:', err);
-            alert('Erro ao salvar o arquivo no servidor.\n' + err.message);
+            alert('Erro ao salvar o arquivo.\n' + err.message);
         });
     });
 
