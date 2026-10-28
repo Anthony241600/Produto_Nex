@@ -98,6 +98,8 @@
     var tarefa1Btn = document.getElementById('tarefa1-btn');
     var tarefa2Btn = document.getElementById('tarefa2-btn');
     var tarefa3Btn = document.getElementById('tarefa3-btn');
+    var hbgBtn = document.getElementById('hamburger-btn');
+    var popup = document.getElementById('popup')
 
     // ========================================
     // SPLASH SCREEN - exibe por 3 segundos
@@ -108,6 +110,22 @@
         // Carregar lista de CSVs assim que a tela principal aparecer
         carregarListaCSV();
     }, 3000);
+
+    //=========================================
+    //POP UP
+    //=========================================
+    let visivel = false;
+    popup.classList.add('hidden')
+    hbgBtn.addEventListener('click', () => {
+        if(visivel == false){
+            popup.classList.remove('hidden')
+            visivel = true
+        }
+        else{
+            popup.classList.add('hidden')
+            visivel = false
+        }
+    })
 
     // ========================================
     // CARREGAR LISTA DE ARQUIVOS CSV
@@ -228,14 +246,6 @@
             }
         }
 
-        // Coluna SOMA no final (se há colunas numéricas)
-        if (temColunasNumericas) {
-            var thSoma = document.createElement('th');
-            thSoma.textContent = 'Soma';
-            thSoma.classList.add('col-soma');
-            headerRow.appendChild(thSoma);
-        }
-
         thead.appendChild(headerRow);
         table.appendChild(thead);
 
@@ -258,12 +268,7 @@
                 tr.appendChild(tdData);
 
                 // Somar valores numéricos (colunas a partir da 1)
-                if (col > 0) {
-                    var num = parseInt(cellValue, 10);
-                    if (!isNaN(num)) {
-                        somaLinha += num;
-                    }
-                }
+                
             }
 
             // Colunas de pontuação (se tarefa ativa)
@@ -280,14 +285,6 @@
 
                     tr.appendChild(td);
                 }
-            }
-
-            // Coluna SOMA no final
-            if (temColunasNumericas) {
-                var tdSoma = document.createElement('td');
-                tdSoma.classList.add('cell-soma');
-                tdSoma.textContent = String(somaLinha);
-                tr.appendChild(tdSoma);
             }
 
             tbody.appendChild(tr);

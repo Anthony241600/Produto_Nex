@@ -11,6 +11,8 @@ var ASSETS_TO_CACHE = [
     'app.js',
     'manifest.json',
     'imagens/senai-logo.png',
+    'imagens/logoNexus1.png',
+    'imagens/logoNexus2.png',
     'imagens/icon-192.png',
     'imagens/icon-512.png',
     'imagens/imagem-01.png',
