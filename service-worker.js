@@ -2,7 +2,7 @@
 // SERVICE WORKER - SENAI Gamificação PWA
 // ========================================
 
-var CACHE_NAME = 'senai-gamificacao-v4';
+var CACHE_NAME = 'senai-gamificacao-v5';
 
 var ASSETS_TO_CACHE = [
     './',

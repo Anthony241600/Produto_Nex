@@ -18,6 +18,65 @@
         3: ['imagens/imagem-07.png', 'imagens/imagem-08.png', 'imagens/imagem-09.png']
     };
 
+
+    // ========================================
+    // ACESSO AOS CSVs
+    // Funciona de 2 jeitos:
+    //  - COM servidor Node (server.js): usa a API  (api/csv-list, api/csv/<nome>)
+    //  - SEM servidor (GitHub Pages): lê csv/index.json e csv/<nome>;
+    //    ao encerrar a atividade, guarda a turma no navegador (localStorage), sem baixar nada.
+    // Obs.: caminhos SEM "/" no início, para funcionar em github.io/<repositorio>/
+    // ========================================
+    var modoEstatico = false;
+
+    function listarCSVs() {
+        return fetch('api/csv-list')
+            .then(function (r) {
+                if (!r.ok) throw new Error('sem API');
+                return r.json();
+            })
+            .catch(function () {
+                modoEstatico = true;
+                return fetch('csv/index.json', { cache: 'no-cache' }).then(function (r) {
+                    if (!r.ok) throw new Error('csv/index.json não encontrado');
+                    return r.json();
+                });
+            });
+    }
+
+    function lerCSV(nome) {
+        if (modoEstatico) {
+            try {
+                var salvo = localStorage.getItem('csv:' + nome);
+                if (salvo) return Promise.resolve(salvo);
+            } catch (e) { /* localStorage indisponível */ }
+            return fetch('csv/' + encodeURIComponent(nome), { cache: 'no-cache' }).then(function (r) {
+                if (!r.ok) throw new Error('Erro ao ler CSV');
+                return r.text();
+            });
+        }
+        return fetch('api/csv/' + encodeURIComponent(nome)).then(function (r) {
+            if (!r.ok) throw new Error('Erro ao ler CSV');
+            return r.text();
+        });
+    }
+
+    function salvarCSV(nome, conteudo) {
+        if (modoEstatico) {
+            try { localStorage.setItem('csv:' + nome, conteudo); }
+            catch (e) { return Promise.reject(new Error('Não foi possível salvar neste navegador.')); }
+            return Promise.resolve({ local: true });
+        }
+        return fetch('api/csv/' + encodeURIComponent(nome), {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/csv; charset=utf-8' },
+            body: conteudo
+        }).then(function (r) {
+            if (!r.ok) throw new Error('Erro ao salvar - status: ' + r.status);
+            return r.json();
+        });
+    }
+
     // ---- Elementos do DOM ----
     var splashScreen = document.getElementById('splash-screen');
     var mainScreen = document.getElementById('main-screen');
@@ -83,11 +142,7 @@
     // CARREGAR LISTA DE ARQUIVOS CSV
     // ========================================
     function carregarListaCSV() {
-        fetch('/api/csv-list')
-            .then(function (response) {
-                if (!response.ok) throw new Error('Erro ao buscar lista de CSVs');
-                return response.json();
-            })
+        listarCSVs()
             .then(function (files) {
                 // Limpar opções existentes (exceto a primeira)
                 csvSelect.innerHTML = '<option value="">-- Selecione uma turma --</option>';
@@ -121,11 +176,7 @@
 
         csvFileName = selectedFile;
 
-        fetch('/api/csv/' + encodeURIComponent(selectedFile))
-            .then(function (response) {
-                if (!response.ok) throw new Error('Erro ao ler CSV');
-                return response.text();
-            })
+        lerCSV(selectedFile)
             .then(function (text) {
                 processCSV(text);
             })
@@ -362,36 +413,26 @@
         console.log('csvData DEPOIS:', JSON.stringify(csvData));
         console.log('CSV a ser salvo:\n' + csvContent);
 
-        // Salvar no servidor via POST
-        fetch('/api/csv/' + encodeURIComponent(csvFileName), {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/csv; charset=utf-8' },
-            body: csvContent
-        })
-        .then(function (response) {
-            console.log('POST response status:', response.status);
-            if (!response.ok) throw new Error('Erro ao salvar - status: ' + response.status);
-            return response.json();
-        })
-        .then(function (data) {
-            console.log('Salvo com sucesso:', data);
-            alert('Atividade encerrada!\nArquivo "' + csvFileName + '" atualizado com sucesso.\nColuna "' + dataAtual + '" adicionada.');
+        // Salvar (servidor Node: grava o arquivo | site estático: guarda no navegador e baixa)
+        var fileToReload = csvFileName;
+        salvarCSV(fileToReload, csvContent)
+        .then(function (resultado) {
+            if (resultado && resultado.local) {
+                alert('Atividade encerrada!\nColuna "' + dataAtual + '" adicionada e salva neste navegador.');
+            } else {
+                alert('Atividade encerrada!\nArquivo "' + fileToReload + '" atualizado com sucesso.\nColuna "' + dataAtual + '" adicionada.');
+            }
 
-            // Recarregar CSV do servidor para manter em sincronia
-            var fileToReload = csvFileName;
             tarefaAtiva = null;
             resetBotoesTarefa();
-
-            fetch('/api/csv/' + encodeURIComponent(fileToReload))
-                .then(function (resp) { return resp.text(); })
-                .then(function (text) {
-                    processCSV(text);
-                    console.log('CSV recarregado do servidor com sucesso');
-                });
+            return lerCSV(fileToReload);
+        })
+        .then(function (text) {
+            processCSV(text);
         })
         .catch(function (err) {
             console.error('Erro ao salvar CSV:', err);
-            alert('Erro ao salvar o arquivo no servidor.\n' + err.message);
+            alert('Erro ao salvar o arquivo.\n' + err.message);
         });
     });
 

@@ -142,7 +142,7 @@
                 }
             } else {
                 window.addEventListener('load', function () {
-                    navigator.serviceWorker.register('/service-worker.js', { updateViaCache: 'none' })
+                    navigator.serviceWorker.register('service-worker.js', { updateViaCache: 'none' })
                         .then(function (reg) { console.log('[PWA] Service Worker registrado:', reg.scope); })
                         .catch(function (err) { console.log('[PWA] Erro ao registrar SW:', err); });
                 });
