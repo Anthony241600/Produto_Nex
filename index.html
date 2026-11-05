@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="description" content="SENAI - Sistema de Gamificação para Atividades Práticas">
-    <title>Nex.epi</title>
+    <title>SENAI - Gamificação</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#e30613">
@@ -21,6 +21,58 @@
 
     <!-- ============ TELA 01: PRINCIPAL ============ -->
     <div id="main-screen">
+
+        <!--Card Lateral-->
+        <button id="btnCard"><img src="./imagens/capacete.png" alt="capacete"></button>
+        <div id="cardCrsl">
+            <div id="conteinerCrsl">
+                <div class="card">
+                    <img src="./imagens/imagem-01.png" alt="Capacete">
+                    <h2>Capacete</h2>
+                    <p>Protege a cabeça contra impactos, quedas de objetos e possíveis acidentes. É essencial em ambientes de construção, indústrias e locais com riscos de impacto.</p>
+                </div>
+                <div class="card">
+                    <img src="./imagens/imagem-02.png" alt="Mascara">
+                    <h2>Máscara</h2>
+                    <p>Protege as vias respiratórias contra poeiras, fumaças, gases e partículas prejudiciais à saúde, evitando a inalação de substâncias perigosas.</p>
+                </div>
+                <div class="card">
+                    <img src="./imagens/imagem-03.png" alt="Colete">
+                    <h2>Colete de segurança</h2>
+                    <p>Aumenta a visibilidade do trabalhador por meio de faixas refletivas, ajudando a prevenir acidentes em locais com veículos, máquinas e pouca iluminação.</p>
+                </div>
+                <div class="card">
+                    <img src="./imagens/imagem-04.png" alt="Bota">
+                    <h2>Bota de segurança</h2>
+                    <p>Protege os pés contra quedas de objetos, perfurações, escorregões e contato com substâncias perigosas.</p>
+                </div>
+                <div class="card">
+                    <img src="./imagens/imagem-05.png" alt="kit de primeiros socorros">
+                    <h2>Kit de primeiros socorros</h2>
+                    <p>Permite prestar os cuidados iniciais em situações de emergência, auxiliando no atendimento de pequenos ferimentos até a chegada de profissionais de saúde.</p>
+                </div>
+                <div class="card">
+                    <img src="./imagens/imagem-06.png" alt="abafador de ruído">
+                    <h2>Abafador de ruído</h2>
+                    <p>Reduz a exposição a ruídos elevados, protegendo a audição e ajudando a prevenir problemas auditivos causados pelo barulho excessivo.</p>
+                </div>
+                <div class="card">
+                    <img src="./imagens/imagem-07.png" alt="Oculos de Proteção">
+                    <h2>Óculos de proteção</h2>
+                    <p>Protegem os olhos contra poeira, partículas, respingos químicos e outros materiais que podem causar lesões durante o trabalho.</p>
+                </div>
+                <div class="card">
+                    <img src="./imagens/imagem-08.png" alt="Luvas">
+                    <h2>Luvas</h2>
+                    <p>Protegem as mãos contra cortes, queimaduras, produtos químicos, abrasões e outros riscos, conforme o tipo de luva utilizado.</p>
+                </div>
+                <div class="card">
+                    <img src="./imagens/imagem-09.png" alt="Jaleco">
+                    <h2>Jaleco</h2>
+                    <p>Funciona como uma barreira de proteção para o corpo e as roupas, evitando o contato direto com sujeiras, respingos e determinadas substâncias presentes no ambiente de trabalho.</p>
+                </div>
+            </div>
+        </div>
 
         <!-- HEADER -->
         <header id="app-header">
@@ -90,7 +142,7 @@
                 }
             } else {
                 window.addEventListener('load', function () {
-                    navigator.serviceWorker.register('service-worker.js', { updateViaCache: 'none' })
+                    navigator.serviceWorker.register('/service-worker.js', { updateViaCache: 'none' })
                         .then(function (reg) { console.log('[PWA] Service Worker registrado:', reg.scope); })
                         .catch(function (err) { console.log('[PWA] Erro ao registrar SW:', err); });
                 });
