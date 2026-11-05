@@ -421,36 +421,135 @@ body {
     pointer-events: none;
 }
 
-#btnCard{position: absolute; width: 70px; height: 50px; margin-left: -300px; margin-top: 15px; border: 2px solid #ffffff; border-radius: 10px; background: none;}
-#btnCard:hover{ background: linear-gradient(to right, #0618e3, #067fe3); border: none;}
-#btnCard img{width: 50px; height: 50px;}
-#cardCrsl{background: linear-gradient(315deg, #1e2fe2, #1892f7); position: absolute; width: 270px; height: 650px; margin-left: -300px; margin-top: 80px; overflow: hidden; border-radius: 30px;}
-#cardCrsl.hidden{opacity: 0; visibility: hidden; pointer-events: none;}
-#conteinerCrsl{width: 2430px; display: flex; flex-direction: row; animation: scrolCarrossel 108s infinite;}
-#conteinerCrsl.hidden{opacity: 0; visibility: hidden; pointer-events: none; animation-play-state: paused;}
-.card{width: 270px; height: 650px; display: flex; flex-direction: column; padding-left: 20px; padding-right: 20px;}
-.card img {margin-top: 20px; margin-bottom: 30px; width: auto; height: auto;}
-.card h2{font-size: 25px; margin-bottom: 30px;}
-.card p{font-size: 20px;}
+/* ========================================
+   Card Lateral
+   ======================================== */
+
+#btnCard {
+    position: absolute;
+    width: 70px;
+    height: 50px;
+    margin-left: -300px;
+    margin-top: 15px;
+    border: 2px solid #ffffff;
+    border-radius: 10px;
+    background: none;
+}
+
+#btnCard:hover {
+    background: linear-gradient(to right, #0618e3, #067fe3);
+    border: none;
+}
+
+#btnCard img {
+    width: 50px;
+    height: 50px;
+}
+
+#cardCrsl {
+    background: linear-gradient(315deg, #1867b1, #1892f7);
+    position: absolute;
+    width: 270px;
+    height: 650px;
+    margin-left: -300px;
+    margin-top: 80px;
+    overflow: hidden;
+    border-radius: 30px;
+}
+
+#cardCrsl.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+#conteinerCrsl {
+    width: 2430px;
+    display: flex;
+    flex-direction: row;
+    animation: scrolCarrossel 108s infinite;
+}
+
+#conteinerCrsl.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    animation-play-state: paused;
+}
+
+.card {
+    width: 270px;
+    height: 650px;
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.card img {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    width: auto;
+    height: auto;
+}
+
+.card h2 {
+    font-size: 25px;
+    margin-bottom: 30px;
+}
+
+.card p {
+    font-size: 20px;
+}
 
 @keyframes scrolCarrossel {
+
     0%,
-  9.26%   { transform: translateX(0); }
-  11.11%,
-  20.37%  { transform: translateX(-270px); }
-  22.22%,
-  31.48%  { transform: translateX(-540px); }
-  33.33%,
-  42.59%  { transform: translateX(-810px); }
-  44.44%,
-  53.70%  { transform: translateX(-1080px); }
-  55.55%,
-  64.81%  { transform: translateX(-1350px); }
-  66.66%,
-  75.92%  { transform: translateX(-1620px); }
-  77.77%,
-  87.03%  { transform: translateX(-1890px); }
-  88.88%,
-  98.14%  { transform: translateX(-2160px); }
-  100%    { transform: translateX(2430px); }
+    9.26% {
+        transform: translateX(0);
+    }
+
+    11.11%,
+    20.37% {
+        transform: translateX(-270px);
+    }
+
+    22.22%,
+    31.48% {
+        transform: translateX(-540px);
+    }
+
+    33.33%,
+    42.59% {
+        transform: translateX(-810px);
+    }
+
+    44.44%,
+    53.70% {
+        transform: translateX(-1080px);
+    }
+
+    55.55%,
+    64.81% {
+        transform: translateX(-1350px);
+    }
+
+    66.66%,
+    75.92% {
+        transform: translateX(-1620px);
+    }
+
+    77.77%,
+    87.03% {
+        transform: translateX(-1890px);
+    }
+
+    88.88%,
+    98.14% {
+        transform: translateX(-2160px);
+    }
+
+    100% {
+        transform: translateX(2430px);
+    }
 }
